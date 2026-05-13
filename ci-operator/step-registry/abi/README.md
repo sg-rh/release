@@ -91,7 +91,11 @@ Day1.5:
 
 ## Tunneling / Chisel
 
-Operational layout and port table: [WebApp Services — Chisel Tunneling Service](https://redhat.atlassian.net/wiki/spaces/MPEXIENG/pages/254804070/WebApp+Services#Step2.1.2.2.3--Chisel_OperationalTasks).
+Refer to [WebApp Services — Chisel Tunneling Service](https://redhat.atlassian.net/wiki/display/MPEXIENG/WebApp+Services#Chisel-Tunneling-Service)
+for the reference setup (which uses **NGINX** as a reverse proxy in front of **Chisel** to achieve configurable data-plane port forwarding).
+
+Operational layout and port table (if the above reference setup is used):
+[Chisel Tunneling Service](https://redhat.atlassian.net/wiki/display/MPEXIENG/WebApp+Services#Step2.1.2.2.3--Chisel_OperationalTasks).
 
 Step Input Parameters: `OCP__ABI__TUN_SVC__*` / `OCP__ABI__TEAM_NAME`
 
