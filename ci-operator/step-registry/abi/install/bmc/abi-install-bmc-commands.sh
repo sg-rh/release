@@ -57,10 +57,6 @@ function openshift-install () {
 }
 
 function HandleSIGCHLD () {
-    typeset __shOpt
-    __shOpt="$(shopt -po errexit nounset xtrace pipefail; shopt -p inherit_errexit)"
-    trap 'eval "${__shOpt}"; unset __shOpt; trap - RETURN' RETURN
-    set -euxo pipefail; shopt -s inherit_errexit
     typeset -i i=0
     for i in "${!taskPIDs[@]}"; do
         kill -0 "${taskPIDs[i]}" 2>/dev/null ||
