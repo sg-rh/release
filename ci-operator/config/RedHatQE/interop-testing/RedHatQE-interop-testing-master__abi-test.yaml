@@ -55,8 +55,8 @@ tests:
       OCP__ABI__TUN_SVC__CP_URL: https://chisel.lp-chaos--svc--web-app.chaos.lp.devcluster.openshift.com/cp
       OCP__ABI__TUN_SVC__DP_BASE_URL: https://chisel.lp-chaos--svc--web-app.chaos.lp.devcluster.openshift.com/dp
       OCP__ABI__TUN_SVC__DP_PORT: "20000"
-      OCP__ABI__WAIT__BOOTSTRAP__H: "2"
-      OCP__ABI__WAIT__CLUSTER__H: "2"
+      OCP__ABI__WAIT__BOOTSTRAP__TRY: "3"
+      OCP__ABI__WAIT__CLUSTER__TRY: "2"
     test:
     - ref: abi-install-bmc
     workflow: external-cluster
