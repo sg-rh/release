@@ -15,6 +15,12 @@ tests:
         set +eu -o pipefail; shopt -s inherit_errexit
         true
       credentials:
+      - mount_path: /secret/chisel
+        name: chisel-creds
+        namespace: test-credentials
+      - mount_path: /var/run/secrets/vault--bit-warden
+        name: ieng--vault--bit-warden
+        namespace: test-credentials
       - mount_path: /var/run/secrets/registry-pull--build-farms
         name: registry-pull-credentials
         namespace: test-credentials
