@@ -46,7 +46,15 @@ ref:
     - name: OCP__ABI__TUN_SVC__CP_URL
       documentation: |-
         Required (no default). Control-plane URL for `chisel client` (e.g. `https://<svcFQDN>/cp`).
-    - name: OCP__ABI__WAIT__BOOTSTRAP__H
+    - name: OCP__ABI__WAIT__NODE_READY__M
+      default: "20"
+      documentation: |-
+        Maximum wait time (in min.) for the Node to be ready (reachable by SSH). When this time has elapsed, it is assumed that the Node is stuck at booting
+        phase.
+        Recommended value:
+          - 2 * AverageNodeBootTimeInMin
+          - AverageNodeBootTimeInMin=10 -> 20
+    - name: OCP__ABI__WAIT__BOOTSTRAP__TRY
       default: "3"
       documentation: |-
         Maximum attempts for `openshift-install agent wait-for bootstrap-complete` (each attempt is subject to the installer's internal timeout, currently
@@ -55,7 +63,7 @@ ref:
         Recommended value:
           - RoundUp((1.5 * AverageNodeBootTimeInMin) * NumOfNodes / InstallerTimeOutInMin) + 1
           - AverageNodeBootTimeInMin=10, NumOfNodes=6, InstallerTimeOutInMin=60 -> 3
-    - name: OCP__ABI__WAIT__CLUSTER__H
+    - name: OCP__ABI__WAIT__CLUSTER__TRY
       default: "2"
       documentation: |-
         Maximum attempts for `openshift-install agent wait-for install-complete`.

@@ -156,8 +156,8 @@ sshEOF
             --arg url "${bmcURL}" \
             '.[] | select(.url == $url).hostIPv4' \
         0< "${bmcInfo}")"
-        typeset -i es=0
-        while true; do
+        typeset -i tryLeft=$((2 * OCP__ABI__WAIT__NODE_READY__M)) es=0
+        while ((tryLeft)); do
             kill -0 "${tPID}" 2>/dev/null || break
             sleep 30
             es=0
@@ -180,6 +180,7 @@ sshEOF
                 [[ "${stdErr}" =~ ${rgx} ]] && exit 255
                 ;;
             esac
+            ((--tryLeft))
         done
       ) || es=$?;;
       (BMC) (
@@ -393,9 +394,8 @@ set -x
         curl -fsSL -I -o /dev/null \
             --connect-timeout 2 --max-time 5 \
             "${isoURL}" && break
-        ((tryLeft--))
+        ((--tryLeft))
     done
-    ((tryLeft))
 )
 
 # Reboot Nodes into OCP Agent Installation ISO.
@@ -493,10 +493,9 @@ set -x
             # Wipe Disks via Host OS (only detect ISO Boot for BMC Wipe).
             WipeDisks "${tPID}" "${bmcInfo}" \
                 "${bmcURL}" "${bmcSysId}" "${bmcMgrId}" \
-                "${diskWipeMethod}" && break || true
-            ((tryLeft--))
+                "${diskWipeMethod}" && break
+            ((--tryLeft))
         done
-        ((tryLeft))
         # Restore Boot Order.
         [ -z "${diskWipeMethod}" ] || {
             RedfishAPIcall "${bmcInfo}" "${bmcURL}" PATCH \
@@ -512,12 +511,11 @@ set -x
 } |& tee "${ARTIFACT_DIR}/ocp--installer--bmc.log") & taskPIDs+=($!)
 # Wait for BootStrap Node to finish.
 (
-    typeset -i tryLeft="${OCP__ABI__WAIT__BOOTSTRAP__H}"
+    typeset -i tryLeft="${OCP__ABI__WAIT__BOOTSTRAP__TRY}"
     while ((tryLeft)); do
         openshift-install agent wait-for bootstrap-complete && break
-        ((tryLeft--))
+        ((--tryLeft))
     done
-    ((tryLeft))
 )
 cp -f "${OCP__ABI__CLUSTER_DIR}/auth/kubeconfig" "${SHARED_DIR}/kubeconfig-minimal"
 
@@ -554,12 +552,11 @@ cp -f "${OCP__ABI__CLUSTER_DIR}/auth/kubeconfig" "${SHARED_DIR}/kubeconfig-minim
 ) & taskPIDs+=($!)
 # Wait for OCP installation to complete (`install-complete` can be slow with many workers).
 (
-    typeset -i tryLeft="${OCP__ABI__WAIT__CLUSTER__H}"
+    typeset -i tryLeft="${OCP__ABI__WAIT__CLUSTER__TRY}"
     while ((tryLeft)); do
         openshift-install agent wait-for install-complete && break
-        ((tryLeft--))
+        ((--tryLeft))
     done
-    ((tryLeft))
 )
 
 # Eject virtual media on all nodes (ISO no longer needed after install).
